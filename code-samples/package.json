@@ -1,0 +1,21 @@
+{
+  "name": "kappa-workshop",
+  "description": "P2P collaboration workshop",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^2.4.1",
+    "hypercore": "^9.10.0",
+    "hyperswarm": "^2.15.3",
+    "kappa-core": "^7.0.0",
+    "kappa-view-kv": "^2.0.1",
+    "kappa-view-list": "^1.1.1",
+    "level": "^7.0.0",
+    "level-mem": "^5.0.1",
+    "lodash": "^4.17.21",
+    "multifeed": "^6.0.0",
+    "neat-log": "^3.1.0",
+    "pump": "^3.0.0",
+    "random-access-memory": "^3.1.2",
+    "txt-blit": "^1.0.0"
+  }
+}

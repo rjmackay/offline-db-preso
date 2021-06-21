@@ -1,0 +1,45 @@
+{\rtf1\ansi\uc0\deff0{\fonttbl{\f0\fmodern\fprq1\fcharset0;}}{\colortbl;\red23\green117\blue0;\red99\green56\blue32;\red28\green1\blue206;\red196\green26\blue22;\red35\green0\blue206;\red0\green0\blue0;\red169\green13\blue145;\red131\green108\blue40;\red63\green110\blue117;\red91\green38\blue154;}\f0 {\cf7 const} {\cf6 kappa} {\cf6 =} {\cf6 require}({\cf4 'kappa-core'})\par
+{\cf7 const} {\cf6 ram} {\cf6 =} {\cf6 require}({\cf4 'random-access-memory'})\par
+{\cf7 const} {\cf6 crypto} {\cf6 =} {\cf6 require}({\cf4 'crypto'});\par
+{\cf7 const} {\cf6 hyperswarm} {\cf6 =} {\cf6 require}({\cf4 'hyperswarm'})\par
+{\cf7 const} {\cf6 pump} {\cf6 =} {\cf6 require}({\cf4 'pump'})\par
+{\cf7 const} {\cf6 recordView} {\cf6 =} {\cf6 require}({\cf4 './record-view'});\par
+{\cf7 const} {\cf6 level} {\cf6 =} {\cf6 require}({\cf4 'level-mem'});\par
+\par
+{\cf7 const} {\cf6 topic} {\cf6 =} {\cf6 crypto}.{\cf6 createHash}({\cf4 'sha256'}).{\cf6 update}({\cf4 'jsconf-todos'}).{\cf6 digest}()\par
+{\cf7 const} {\cf6 swarm} {\cf6 =} {\cf6 hyperswarm}()\par
+\par
+{\cf7 const} {\cf6 core} {\cf6 =} {\cf6 kappa}({\cf6 ram}, \{ {\cf6 valueEncoding}{\cf6 :} {\cf4 'json'} \})\par
+{\cf6 core}.{\cf6 use}({\cf4 'records'}, {\cf6 recordView}({\cf6 level}(\{ {\cf6 valueEncoding}{\cf6 :} {\cf4 "json"} \})))\par
+{\cf6 core}.{\cf6 writer}({\cf4 'local'}, {\cf7 function} ({\cf6 err}, {\cf6 feed}) \{\par
+    {\cf6 swarm}.{\cf6 join}({\cf6 topic}, \{ {\cf6 lookup}{\cf6 :} {\cf7 true}, {\cf6 announce}{\cf6 :} {\cf7 true} \})\par
+    {\cf6 swarm}.{\cf6 on}({\cf4 'connection'}, {\cf7 function} ({\cf6 connection}, {\cf6 info}) \{\par
+        {\cf6 console}.{\cf6 log}({\cf4 "New peer!"})\par
+        {\cf6 pump}({\cf6 connection}, {\cf6 core}.{\cf6 replicate}({\cf6 info}.{\cf6 client}, \{ {\cf6 live}{\cf6 :} {\cf7 true} \}), {\cf6 connection})\par
+    \});\par
+\par
+    {\cf6 process}.{\cf6 stdin}.{\cf6 on}({\cf4 'data'}, {\cf7 function} ({\cf6 data}) \{\par
+        {\cf6 feed}.{\cf6 append}(\{\par
+            {\cf6 type}{\cf6 :} {\cf4 'put'},\par
+            {\cf6 text}{\cf6 :} {\cf6 data}.{\cf6 toString}().{\cf6 trim}(),\par
+            {\cf6 id}{\cf6 :} {\cf7 Date}.{\cf6 now}(),\par
+            {\cf6 done}{\cf6 :} {\cf7 false}\par
+        \})\par
+    \})\par
+\})\par
+\par
+{\cf6 core}.{\cf6 ready}([], {\cf7 function} () \{\par
+    {\cf1 // Get latest 10 messages\par
+}    {\cf6 core}.{\cf6 api}.{\cf6 records}.{\cf6 all}({\cf7 function} ({\cf6 data}) \{\par
+        {\cf7 for} ({\cf7 let} {\cf6 msg} {\cf7 of} {\cf6 data}.{\cf6 reverse}()) \{\par
+            {\cf6 console}.{\cf6 log}({\cf6 msg})\par
+        \}\par
+    \})\par
+    {\cf1 // Listen for latest message. \par
+}    {\cf6 core}.{\cf6 api}.{\cf6 records}.{\cf6 on}({\cf4 'batch'}, {\cf7 function} ({\cf6 data}) \{\par
+        {\cf7 for} ({\cf7 let} {\cf6 msg} {\cf7 of} {\cf6 data}) \{\par
+            {\cf6 console}.{\cf6 log}({\cf6 msg})\par
+        \}\par
+    \});\par
+\})\par
+}

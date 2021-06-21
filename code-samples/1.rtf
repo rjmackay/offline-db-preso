@@ -1,0 +1,19 @@
+{\rtf1\ansi\uc0\deff0{\fonttbl{\f0\fmodern\fprq1\fcharset0;}}{\colortbl;\red23\green117\blue0;\red99\green56\blue32;\red28\green1\blue206;\red196\green26\blue22;\red35\green0\blue206;\red0\green0\blue0;\red169\green13\blue145;\red131\green108\blue40;\red63\green110\blue117;\red91\green38\blue154;}\f0 {\cf7 const} {\cf6 kappa} {\cf6 =} {\cf6 require}({\cf4 'kappa-core'});\par
+{\cf7 const} {\cf6 ram} {\cf6 =} {\cf6 require}({\cf4 'random-access-memory'});\par
+\par
+{\cf1 // Create a kappa instance. \par
+}{\cf7 const} {\cf6 core} {\cf6 =} {\cf6 kappa}({\cf6 ram}, \{ {\cf6 valueEncoding}{\cf6 :} {\cf4 "json"} \});\par
+{\cf1 // Get a write feed\par
+}{\cf6 core}.{\cf6 writer}({\cf4 "local"}, {\cf7 async} {\cf7 function} ({\cf6 err}, {\cf6 feed}) \{\par
+    {\cf1 // Add a todo to our log\par
+}    {\cf7 const} {\cf6 todo} {\cf6 =} \{ {\cf6 id}{\cf6 :} {\cf3 1}, {\cf6 text}{\cf6 :} {\cf4 "Do the thing!"}, {\cf6 done}{\cf6 :} {\cf7 false} \};\par
+    {\cf6 feed}.{\cf6 append}(\{\par
+        {\cf6 type}{\cf6 :} {\cf4 'put'},\par
+        ...{\cf6 todo}\par
+    \});\par
+\par
+    {\cf6 feed}.{\cf6 get}({\cf3 0}, ({\cf6 err}, {\cf6 data}) => \{\par
+        {\cf6 console}.{\cf6 log}({\cf6 data});\par
+    \});\par
+\});\par
+}

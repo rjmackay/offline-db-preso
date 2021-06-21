@@ -1,0 +1,45 @@
+{\rtf1\ansi\uc0\deff0{\fonttbl{\f0\fmodern\fprq1\fcharset0;}}{\colortbl;\red23\green117\blue0;\red99\green56\blue32;\red28\green1\blue206;\red196\green26\blue22;\red35\green0\blue206;\red0\green0\blue0;\red169\green13\blue145;\red131\green108\blue40;\red63\green110\blue117;\red91\green38\blue154;}\f0 {\cf7 const} {\cf6 makeView} {\cf6 =} {\cf6 require}({\cf4 "kappa-view"});\par
+\par
+{\cf6 module}.{\cf6 exports} {\cf6 =} ({\cf6 storage}) => \{\par
+    {\cf7 return} {\cf6 makeView}({\cf6 storage}, \{ {\cf6 valueEncoding}{\cf6 :} {\cf4 "json"} \}, {\cf7 function} ({\cf6 db}) \{\par
+        {\cf7 return} \{\par
+            {\cf6 map}{\cf6 :} {\cf7 function} ({\cf6 entries}, {\cf6 next}) \{\par
+                {\cf7 const} {\cf6 batch} {\cf6 =} {\cf6 entries}.{\cf6 map}({\cf7 function} ({\cf6 entry}) \{\par
+                    {\cf7 const} \{ {\cf6 id}, {\cf6 type}, ...{\cf6 value} \} {\cf6 =} {\cf6 entry}.{\cf6 value};\par
+                    {\cf7 return} \{\par
+                        {\cf6 type}{\cf6 :} {\cf6 type} {\cf6 ===} {\cf4 "del"} {\cf6 ?} {\cf4 "del"} {\cf6 :} {\cf4 "put"},\par
+                        {\cf6 key}{\cf6 :} {\cf6 id},\par
+                        {\cf6 value}{\cf6 :} {\cf6 value},\par
+                    \};\par
+                \});\par
+                {\cf6 db}.{\cf6 batch}({\cf6 batch}, {\cf6 next});\par
+            \},\par
+\par
+            {\cf6 api}{\cf6 :} \{\par
+                {\cf6 get}{\cf6 :} {\cf7 function} ({\cf6 core}, {\cf6 key}, {\cf6 cb}) \{\par
+                    {\cf6 core}.{\cf6 ready}({\cf7 function} () \{\par
+                        {\cf6 db}.{\cf6 get}({\cf6 key}, {\cf6 cb});\par
+                    \});\par
+                \},\par
+                {\cf6 all}{\cf6 :} {\cf7 function} ({\cf6 core}, {\cf6 cb}) \{\par
+                    {\cf6 core}.{\cf6 ready}(() => \{\par
+                        {\cf7 const} {\cf6 data} {\cf6 =} [];\par
+                        {\cf6 db}.{\cf6 createReadStream}()\par
+                            .{\cf6 on}({\cf4 "data"}, ({\cf6 entry}) => \{\par
+                                {\cf6 data}.{\cf6 push}({\cf6 entry});\par
+                            \})\par
+                            .{\cf6 on}({\cf4 "end"}, () => \{\par
+                                {\cf6 cb}({\cf6 data});\par
+                            \});\par
+                    \});\par
+                \},\par
+                {\cf6 on}{\cf6 :} ({\cf6 core}, {\cf6 event}, {\cf6 cb}) => \{\par
+                    {\cf6 core}.{\cf6 ready}(() => \{\par
+                        {\cf6 db}.{\cf6 on}({\cf6 event}, {\cf6 cb});\par
+                    \});\par
+                \},\par
+            \},\par
+        \};\par
+    \});\par
+\};\par
+}
